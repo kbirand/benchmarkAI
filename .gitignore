@@ -28,3 +28,6 @@ desktop.ini
 
 # Ollama installer artifacts
 OllamaSetup.exe
+
+# Secrets
+token
