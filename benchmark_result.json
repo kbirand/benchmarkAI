@@ -1,0 +1,128 @@
+{
+  "version": "1.0.0",
+  "timestamp": "2026-02-15T22:02:28Z",
+  "machine_uuid": "ccdce073-8c38-536b-bc6d-f8528d788802",
+  "system": {
+    "os": {
+      "platform": "Windows",
+      "platform_release": "10",
+      "platform_version": "10.0.26100",
+      "architecture": "AMD64",
+      "os_name": "Windows",
+      "os_version": "Microsoft Windows 11 Pro"
+    },
+    "cpu": {
+      "physical_cores": 16,
+      "logical_cores": 32,
+      "cpu_name": "AMD Ryzen 9 7950X3D 16-Core Processor"
+    },
+    "ram": {
+      "total_gb": 63.13,
+      "available_gb": 37.23
+    },
+    "gpu": [
+      {
+        "vendor": "NVIDIA",
+        "name": "NVIDIA GeForce RTX 4090",
+        "vram_mb": 24564,
+        "driver": "581.57"
+      },
+      {
+        "vendor": "AMD",
+        "name": "AMD Radeon(TM) Graphics",
+        "vram_mb": 512,
+        "driver": "32.0.11024.2"
+      }
+    ]
+  },
+  "ollama_version": "0.16.1",
+  "benchmark": {
+    "model": "llama3.2:1b",
+    "duration_s": 2.7
+  },
+  "scores": {
+    "performance_score": 3350.56,
+    "efficiency_score": 23.2694,
+    "avg_prompt_eval_tps": 9985.71,
+    "avg_eval_tps": 506.92,
+    "avg_ttft_ms": 121.07,
+    "total_tokens_generated": 865,
+    "total_prompt_tokens": 248,
+    "prompts_completed": 5
+  },
+  "power": {
+    "available": true,
+    "method": "nvidia-smi",
+    "avg_watts": 143.99,
+    "max_watts": 194.84,
+    "min_watts": 55.09,
+    "samples": 6
+  },
+  "results": [
+    {
+      "prompt_id": "instruct_code",
+      "category": "Code Generation",
+      "total_duration_ms": 730.48,
+      "load_duration_ms": 110.63,
+      "prompt_eval_count": 45,
+      "prompt_eval_duration_ms": 4.85,
+      "prompt_eval_tps": 9275.1,
+      "eval_count": 256,
+      "eval_duration_ms": 517.22,
+      "eval_tps": 494.95,
+      "ttft_ms": 115.48
+    },
+    {
+      "prompt_id": "reasoning",
+      "category": "Reasoning",
+      "total_duration_ms": 521.56,
+      "load_duration_ms": 118.88,
+      "prompt_eval_count": 55,
+      "prompt_eval_duration_ms": 5.19,
+      "prompt_eval_tps": 10597.71,
+      "eval_count": 167,
+      "eval_duration_ms": 324.9,
+      "eval_tps": 514.0,
+      "ttft_ms": 124.07
+    },
+    {
+      "prompt_id": "creative_writing",
+      "category": "Creative Writing",
+      "total_duration_ms": 739.04,
+      "load_duration_ms": 117.24,
+      "prompt_eval_count": 44,
+      "prompt_eval_duration_ms": 4.74,
+      "prompt_eval_tps": 9283.88,
+      "eval_count": 256,
+      "eval_duration_ms": 501.75,
+      "eval_tps": 510.21,
+      "ttft_ms": 121.98
+    },
+    {
+      "prompt_id": "summarization",
+      "category": "Summarization",
+      "total_duration_ms": 406.23,
+      "load_duration_ms": 120.48,
+      "prompt_eval_count": 46,
+      "prompt_eval_duration_ms": 4.69,
+      "prompt_eval_tps": 9814.59,
+      "eval_count": 116,
+      "eval_duration_ms": 230.83,
+      "eval_tps": 502.53,
+      "ttft_ms": 125.17
+    },
+    {
+      "prompt_id": "instruction_following",
+      "category": "Instruction Following",
+      "total_duration_ms": 290.6,
+      "load_duration_ms": 113.36,
+      "prompt_eval_count": 58,
+      "prompt_eval_duration_ms": 5.29,
+      "prompt_eval_tps": 10957.25,
+      "eval_count": 70,
+      "eval_duration_ms": 136.48,
+      "eval_tps": 512.91,
+      "ttft_ms": 118.65
+    }
+  ]
+}
