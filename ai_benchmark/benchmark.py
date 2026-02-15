@@ -5,7 +5,7 @@ import ollama
 from .power_monitor import PowerMonitor
 
 # The single standardized benchmark model
-BENCHMARK_MODEL = "llama3.2:1b"
+BENCHMARK_MODEL = "llama3.1:8b"
 
 # Benchmark prompts — diverse workloads to stress different aspects
 BENCHMARK_PROMPTS = [

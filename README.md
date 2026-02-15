@@ -2,7 +2,7 @@
 
 Cross-platform hardware benchmark for AI inference — **compare systems, not models**.
 
-Uses a single standardized model (`llama3.2:1b`) via [Ollama](https://ollama.com) to produce comparable performance scores across any hardware: NVIDIA, AMD, Intel, Apple Silicon, or CPU-only.
+Uses a single standardized model (`llama3.1:8b`) via [Ollama](https://ollama.com) to produce comparable performance scores across any hardware: NVIDIA, AMD, Intel, Apple Silicon, or CPU-only.
 
 ## Quick Start
 
@@ -160,7 +160,7 @@ The benchmark submits the following JSON to your endpoint via POST:
   },
   "ollama_version": "0.6.2",
   "benchmark": {
-    "model": "llama3.2:1b",
+    "model": "llama3.1:8b",
     "duration_s": 42.5
   },
   "scores": {

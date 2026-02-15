@@ -11,7 +11,7 @@ import subprocess
 # Model removal (cross-platform, uses Ollama API)
 # ---------------------------------------------------------------------------
 
-def remove_benchmark_model(model: str = "llama3.2:1b") -> bool:
+def remove_benchmark_model(model: str = "llama3.1:8b") -> bool:
     """Delete the benchmark model from Ollama."""
     try:
         import ollama
