@@ -163,6 +163,33 @@ def install_ollama_windows():
 def install_ollama_linux():
     """Install Ollama on Linux using the official install script."""
     print("Installing Ollama for Linux...")
+
+    # Ensure zstd is available (required by Ollama installer for .tar.zst extraction)
+    try:
+        subprocess.run(["zstd", "--version"], capture_output=True, timeout=5)
+    except FileNotFoundError:
+        print("  Installing zstd (required by Ollama installer)...")
+        for cmd in [
+            ["apt-get", "update", "-qq"],
+            ["apt-get", "install", "-y", "-qq", "zstd"],
+        ]:
+            try:
+                subprocess.run(cmd, capture_output=True, timeout=60)
+                continue
+            except FileNotFoundError:
+                pass
+        # Try dnf/yum/pacman if apt not available
+        for cmd in [
+            ["dnf", "install", "-y", "zstd"],
+            ["yum", "install", "-y", "zstd"],
+            ["pacman", "-S", "--noconfirm", "zstd"],
+        ]:
+            try:
+                subprocess.run(cmd, capture_output=True, timeout=60)
+                break
+            except FileNotFoundError:
+                pass
+
     try:
         # The official one-liner: curl -fsSL https://ollama.com/install.sh | sh
         result = subprocess.run(
