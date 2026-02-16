@@ -149,7 +149,7 @@ class PowerMonitor:
         """Background sampling loop."""
         while self._running:
             sample = self._sample()
-            if sample is not None:
+            if sample is not None and sample > 0:
                 self._samples.append(sample)
             time.sleep(interval)
 

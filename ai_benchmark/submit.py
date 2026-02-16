@@ -6,7 +6,7 @@ import requests
 
 
 # Placeholder — user will provide the real endpoint later
-DEFAULT_ENDPOINT = "https://your-api-endpoint.com/api/llm-bench"
+DEFAULT_ENDPOINT = "https://benchverz.com/api/llm-bench"
 
 
 def build_payload(system_info: dict, benchmark_data: dict, ollama_version: str) -> dict:
@@ -59,14 +59,6 @@ def submit_results(
     Returns True on success, False on failure.
     """
     url = endpoint or DEFAULT_ENDPOINT
-
-    if url == DEFAULT_ENDPOINT:
-        if console:
-            console.print("[yellow]No endpoint configured. Skipping submission.[/]")
-            console.print("[dim]Use --endpoint to specify your server URL.[/]")
-        else:
-            print("No endpoint configured. Skipping submission.")
-        return False
 
     try:
         if console:

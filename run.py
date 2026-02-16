@@ -5,6 +5,7 @@ Automatically installs Ollama if not present.
 Run with: python run.py
 """
 
+import shutil
 import subprocess
 import sys
 import os
@@ -331,11 +332,49 @@ def get_venv_python():
     return os.path.join(VENV_DIR, "bin", "python")
 
 
+def _find_python310_plus():
+    """Return the path to a Python >=3.10 interpreter, or None."""
+    # Each entry is a list of command tokens (to support `py -3.X` on Windows)
+    candidates = []
+    # Check the running interpreter first
+    if sys.version_info >= (3, 10):
+        candidates.append([sys.executable])
+    # Try versioned names (highest first)
+    for minor in range(14, 9, -1):          # 3.14 … 3.10
+        candidates.append([f"python3.{minor}"])
+        if sys.platform == "win32":
+            candidates.append(["py", f"-3.{minor}"])
+    candidates.append(["python3"])
+    candidates.append(["python"])
+
+    for tokens in candidates:
+        exe = shutil.which(tokens[0])
+        if exe is None:
+            continue
+        cmd = [exe] + tokens[1:]
+        try:
+            out = subprocess.check_output(
+                cmd + ["-c", "import sys; print(sys.version_info.major, sys.version_info.minor)"],
+                text=True, stderr=subprocess.DEVNULL,
+            ).strip()
+            major, minor = map(int, out.split())
+            if major == 3 and minor >= 10:
+                return cmd
+        except Exception:
+            continue
+    return None
+
+
 def setup_venv():
     """Create and set up the virtual environment."""
     if not os.path.exists(VENV_DIR):
-        print("Creating virtual environment...")
-        venv.create(VENV_DIR, with_pip=True)
+        py = _find_python310_plus()
+        if py is None:
+            print("[ERROR] Could not find a Python >= 3.10 interpreter on your PATH.")
+            print("        Please install Python 3.10+ and try again.")
+            sys.exit(1)
+        print(f"Creating virtual environment (using {' '.join(py)})...")
+        subprocess.run(py + ["-m", "venv", VENV_DIR], check=True)
 
     python = get_venv_python()
 
@@ -402,7 +441,7 @@ def main():
     print()
 
     result = subprocess.run(
-        [python, "-m", "ai_benchmark.cli", "run", "--no-submit"],
+        [python, "-m", "ai_benchmark.cli", "run"],
         cwd=SCRIPT_DIR,
     )
 
