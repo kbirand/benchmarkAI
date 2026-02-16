@@ -90,11 +90,12 @@ def _print_system_info(sys_info: dict):
 
     gpus = sys_info.get("gpu", [])
     for i, gpu in enumerate(gpus):
-        vram = f" ({gpu['vram_mb']} MB)" if gpu.get("vram_mb") else ""
+        mem_type = gpu.get("memory_type", "")
+        vram_label = f" ({gpu['vram_mb']} MB {mem_type})" if gpu.get("vram_mb") else (f" ({mem_type})" if mem_type else "")
         driver = f" [driver: {gpu['driver']}]" if gpu.get("driver") else ""
         table.add_row(
             f"GPU {i}" if len(gpus) > 1 else "GPU",
-            f"{gpu['vendor']} {gpu['name']}{vram}{driver}",
+            f"{gpu['vendor']} {gpu['name']}{vram_label}{driver}",
         )
 
     table.add_row("Machine UUID", sys_info.get("machine_uuid", "?"))

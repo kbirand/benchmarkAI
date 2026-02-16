@@ -142,11 +142,21 @@ def _detect_gpu_nvidia() -> list[dict]:
             for line in r.stdout.strip().split("\n"):
                 parts = [p.strip() for p in line.split(",")]
                 if len(parts) >= 3:
+                    try:
+                        vram = int(float(parts[1]))
+                        mem_type = "dedicated"
+                    except (ValueError, TypeError):
+                        # Unified memory (e.g. Jetson) — use system RAM
+                        ram = get_ram_info()
+                        vram = int(ram["total_gb"] * 1024)
+                        mem_type = "unified"
+                    driver = parts[2] if parts[2] not in ("[N/A]", "N/A", "") else None
                     gpus.append({
                         "vendor": "NVIDIA",
                         "name": parts[0],
-                        "vram_mb": int(float(parts[1])),
-                        "driver": parts[2],
+                        "vram_mb": vram,
+                        "memory_type": mem_type,
+                        "driver": driver,
                     })
     except FileNotFoundError:
         pass
@@ -168,7 +178,7 @@ def _detect_gpu_amd_linux() -> list[dict]:
                 if "Card series" in line or "card series" in line.lower():
                     name = line.split(":")[-1].strip()
                     if name:
-                        gpus.append({"vendor": "AMD", "name": name, "vram_mb": None, "driver": None})
+                        gpus.append({"vendor": "AMD", "name": name, "vram_mb": None, "memory_type": "dedicated", "driver": None})
         # Try to get VRAM
         if gpus:
             r2 = subprocess.run(
@@ -201,7 +211,7 @@ def _detect_gpu_amd_linux() -> list[dict]:
                     if "Marketing Name:" in line:
                         name = line.split("Marketing Name:")[1].strip()
                         if name and name != "N/A" and "Intel" not in name:
-                            gpus.append({"vendor": "AMD", "name": name, "vram_mb": None, "driver": None})
+                            gpus.append({"vendor": "AMD", "name": name, "vram_mb": None, "memory_type": "dedicated", "driver": None})
         except FileNotFoundError:
             pass
 
@@ -228,6 +238,7 @@ def _detect_gpu_apple() -> list[dict]:
                         "vendor": "Apple",
                         "name": chip,
                         "vram_mb": int(ram["total_gb"] * 1024),  # unified memory
+                        "memory_type": "unified",
                         "driver": "Metal",
                     })
                 break
@@ -253,7 +264,7 @@ def _detect_gpu_intel() -> list[dict]:
             for line in r.stdout.strip().split("\n"):
                 name = line.strip()
                 if name:
-                    gpus.append({"vendor": "Intel", "name": name, "vram_mb": None, "driver": None})
+                    gpus.append({"vendor": "Intel", "name": name, "vram_mb": None, "memory_type": "shared", "driver": None})
         except Exception:
             pass
 
@@ -265,7 +276,7 @@ def _detect_gpu_intel() -> list[dict]:
             for line in r.stdout.split("\n"):
                 if "VGA" in line and "Intel" in line:
                     name = line.split(":")[-1].strip()
-                    gpus.append({"vendor": "Intel", "name": name, "vram_mb": None, "driver": None})
+                    gpus.append({"vendor": "Intel", "name": name, "vram_mb": None, "memory_type": "shared", "driver": None})
         except FileNotFoundError:
             pass
 
@@ -309,7 +320,7 @@ def _detect_gpu_windows_fallback() -> list[dict]:
                 elif "intel" in name_lower:
                     vendor = "Intel"
 
-                gpus.append({"vendor": vendor, "name": name, "vram_mb": vram, "driver": driver})
+                gpus.append({"vendor": vendor, "name": name, "vram_mb": vram, "memory_type": "dedicated", "driver": driver})
     except Exception:
         pass
     return gpus
@@ -339,7 +350,7 @@ def get_gpu_info() -> list[dict]:
                 gpus.append(g)
 
     if not gpus:
-        gpus.append({"vendor": "None", "name": "No dedicated GPU detected", "vram_mb": None, "driver": None})
+        gpus.append({"vendor": "None", "name": "No dedicated GPU detected", "vram_mb": None, "memory_type": None, "driver": None})
 
     return gpus
 
