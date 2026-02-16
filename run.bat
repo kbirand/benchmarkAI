@@ -94,7 +94,7 @@ echo [OK] Dependencies installed.
 echo.
 echo Starting benchmark...
 echo.
-python -m ai_benchmark.cli run --no-submit
+python -m ai_benchmark.cli run
 
 echo.
 echo ================================================
