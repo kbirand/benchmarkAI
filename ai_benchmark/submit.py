@@ -6,7 +6,7 @@ import requests
 
 
 # Placeholder — user will provide the real endpoint later
-DEFAULT_ENDPOINT = "https://your-api-endpoint.com/api/benchmark"
+DEFAULT_ENDPOINT = "https://your-api-endpoint.com/api/llm-bench"
 
 
 def build_payload(system_info: dict, benchmark_data: dict, ollama_version: str) -> dict:
