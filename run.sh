@@ -70,8 +70,13 @@ if [ -z "$OLLAMA_BIN" ]; then
                 # Symlink CLI
                 CLI_SRC="/Applications/Ollama.app/Contents/Resources/ollama"
                 if [ -x "$CLI_SRC" ]; then
-                    sudo ln -sf "$CLI_SRC" /usr/local/bin/ollama 2>/dev/null || \
-                        ln -sf "$CLI_SRC" "$HOME/.local/bin/ollama" 2>/dev/null || true
+                    if mkdir -p /usr/local/bin 2>/dev/null && ln -sf "$CLI_SRC" /usr/local/bin/ollama 2>/dev/null; then
+                        true
+                    elif mkdir -p "$HOME/.local/bin" 2>/dev/null && ln -sf "$CLI_SRC" "$HOME/.local/bin/ollama" 2>/dev/null; then
+                        true
+                    else
+                        echo "  [INFO] Could not create symlink; using CLI from $CLI_SRC"
+                    fi
                 fi
                 echo "[OK] Ollama.app installed to /Applications."
             else
@@ -94,6 +99,10 @@ if [ -z "$OLLAMA_BIN" ]; then
         OLLAMA_BIN="ollama"
     elif [ -x "/usr/local/bin/ollama" ]; then
         OLLAMA_BIN="/usr/local/bin/ollama"
+    elif [ -x "$HOME/.local/bin/ollama" ]; then
+        OLLAMA_BIN="$HOME/.local/bin/ollama"
+    elif [ -x "/Applications/Ollama.app/Contents/Resources/ollama" ]; then
+        OLLAMA_BIN="/Applications/Ollama.app/Contents/Resources/ollama"
     else
         echo "[ERROR] Ollama installed but not found. Restart your terminal and try again."
         exit 1

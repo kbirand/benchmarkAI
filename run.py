@@ -48,6 +48,7 @@ OLLAMA_SEARCH_PATHS = {
         "/usr/local/bin/ollama",
         "/opt/homebrew/bin/ollama",
         os.path.expanduser("~/.local/bin/ollama"),
+        "/Applications/Ollama.app/Contents/Resources/ollama",
     ],
 }
 
@@ -237,17 +238,22 @@ def install_ollama_macos():
             # The CLI binary is inside the .app bundle, symlink it
             cli_src = os.path.join(app_dest, "Contents", "Resources", "ollama")
             if os.path.exists(cli_src):
-                try:
-                    subprocess.run(
-                        ["ln", "-sf", cli_src, "/usr/local/bin/ollama"],
-                        check=True, timeout=10,
-                    )
-                except subprocess.CalledProcessError:
-                    # May need sudo
-                    subprocess.run(
-                        ["sudo", "ln", "-sf", cli_src, "/usr/local/bin/ollama"],
-                        timeout=30,
-                    )
+                # Try to symlink into /usr/local/bin (create dir if needed)
+                symlinked = False
+                for link_dir in ["/usr/local/bin", os.path.expanduser("~/.local/bin")]:
+                    try:
+                        os.makedirs(link_dir, exist_ok=True)
+                        link_path = os.path.join(link_dir, "ollama")
+                        if os.path.lexists(link_path):
+                            os.remove(link_path)
+                        os.symlink(cli_src, link_path)
+                        symlinked = True
+                        break
+                    except OSError:
+                        continue
+                if not symlinked:
+                    # CLI is still usable directly from the .app bundle
+                    print(f"  [INFO] Could not create symlink; using CLI from {cli_src}")
             print("[OK] Ollama installed successfully.")
             return True
         else:
